@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Expense Tracker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <header id="header">
+    <nav class="navbar">
+      <div class="logo">
+        <a href="/">TracXpense</a>
+      </div>
+      <div class="info">
+        <p>Total Expense: <span class="amount">1000.00</span></p>
+        <button type="button">Add Expense +</button>
+      </div>
+    </nav>
+  </header>
+  <main id="main">
+    <div class="intro">
+      <h1>Track Your Regular Expenses.</h1>
+      <p>Don't waste your wealth on unnecessery things!</p>
+    </div>
+    <div class="expense-list">
+      <ul>
+        <li class="head">
+          <p>ID</p>
+          <p>Amount</p>
+          <p>Category</p>
+          <p>Description</p>
+        </li>
+        <li class="item">
+          <p class="edit">✒️</p>
+          <p>01</p>
+          <p>1000.00</p>
+          <p>Food</p>
+          <p>Spent by eating outside foods.</p>
+        </li>
+      </ul>
+    </div>
+  </main>
+
+  <section id="form-modal">
+    <form>
+      <label for="amount">
+        Amount
+      </label>
+      <input id="amount" type="number">
+
+      <label for="category">
+        Category
+      </label>
+      <select name="category" id="category">
+        <option value="">Select One</option>
+        <option value="food">Food</option>
+        <option value="transport">Transport</option>
+        <option value="entertainment">Entertainment</option>
+        <option value="etc">Etc.</option>
+      </select>
+
+      <label for="description">
+        Description
+      </label>
+      <textarea name="description" id="description" cols="30" rows="4" ></textarea>
+    </form>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
