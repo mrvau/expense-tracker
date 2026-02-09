@@ -15,7 +15,7 @@
 						<a href="/">track<span class="large">X</span>pense</a>
 					</div>
 					<div class="info">
-						<p>Total Expense: <span class="amount">1000.00</span></p>
+						<p>Total Expense: <span class="amount" id="total-amount">00.00</span></p>
 						<button type="button" class="button" id="open">Add Expense +</button>
 					</div>
 				</nav>
@@ -26,131 +26,12 @@
 					<p>Don't waste your wealth on unnecessary things!</p>
 				</div>
 				<div class="expense-list">
-					<ul>
+					<ul id="expense-list">
 						<li class="head">
 							<div>ID</div>
 							<div>Amount</div>
 							<div>Category</div>
 							<div>Description</div>
-						</li>
-						<li class="item">
-							<button type="button" class="edit" aria-label="Edit expense">✒️</button>
-							<div class="id">01</div>
-							<div class="expense">1000.00</div>
-							<div class="category">Food</div>
-							<div class="description truncate">
-								Spent by eating outside foods. Lorem ipsum dolor sit amet
-								consectetur, adipisicing elit. Repudiandae tenetur reprehenderit
-								ipsum assumenda aliquam, corporis accusamus iste neque eaque ea!
-								<span class="tooltip-text"
-									>Spent by eating outside foods. Lorem ipsum dolor sit amet
-									consectetur, adipisicing elit. Repudiandae tenetur reprehenderit
-									ipsum assumenda aliquam, corporis accusamus iste neque eaque
-									ea!</span
-								>
-							</div>
-						</li>
-						<li class="item">
-							<button type="button" class="edit" aria-label="Edit expense">✒️</button>
-							<div class="id">01</div>
-							<div class="expense">1000.00</div>
-							<div class="category">Food</div>
-							<div class="description truncate">
-								Spent by eating outside foods. Lorem ipsum dolor sit amet
-								consectetur, adipisicing elit. Repudiandae tenetur reprehenderit
-								ipsum assumenda aliquam, corporis accusamus iste neque eaque ea!
-								<span class="tooltip-text"
-									>Spent by eating outside foods. Lorem ipsum dolor sit amet
-									consectetur, adipisicing elit. Repudiandae tenetur reprehenderit
-									ipsum assumenda aliquam, corporis accusamus iste neque eaque
-									ea!</span
-								>
-							</div>
-						</li>
-						<li class="item">
-							<button type="button" class="edit" aria-label="Edit expense">✒️</button>
-							<div class="id">01</div>
-							<div class="expense">1000.00</div>
-							<div class="category">Food</div>
-							<div class="description truncate">
-								Spent by eating outside foods. Lorem ipsum dolor sit amet
-								consectetur, adipisicing elit. Repudiandae tenetur reprehenderit
-								ipsum assumenda aliquam, corporis accusamus iste neque eaque ea!
-								<span class="tooltip-text"
-									>Spent by eating outside foods. Lorem ipsum dolor sit amet
-									consectetur, adipisicing elit. Repudiandae tenetur reprehenderit
-									ipsum assumenda aliquam, corporis accusamus iste neque eaque
-									ea!</span
-								>
-							</div>
-						</li>
-						<li class="item">
-							<button type="button" class="edit" aria-label="Edit expense">✒️</button>
-							<div class="id">01</div>
-							<div class="expense">1000.00</div>
-							<div class="category">Food</div>
-							<div class="description truncate">
-								Spent by eating outside foods. Lorem ipsum dolor sit amet
-								consectetur, adipisicing elit. Repudiandae tenetur reprehenderit
-								ipsum assumenda aliquam, corporis accusamus iste neque eaque ea!
-								<span class="tooltip-text"
-									>Spent by eating outside foods. Lorem ipsum dolor sit amet
-									consectetur, adipisicing elit. Repudiandae tenetur reprehenderit
-									ipsum assumenda aliquam, corporis accusamus iste neque eaque
-									ea!</span
-								>
-							</div>
-						</li>
-						<li class="item">
-							<button type="button" class="edit" aria-label="Edit expense">✒️</button>
-							<div class="id">01</div>
-							<div class="expense">1000.00</div>
-							<div class="category">Food</div>
-							<div class="description truncate">
-								Spent by eating outside foods. Lorem ipsum dolor sit amet
-								consectetur, adipisicing elit. Repudiandae tenetur reprehenderit
-								ipsum assumenda aliquam, corporis accusamus iste neque eaque ea!
-								<span class="tooltip-text"
-									>Spent by eating outside foods. Lorem ipsum dolor sit amet
-									consectetur, adipisicing elit. Repudiandae tenetur reprehenderit
-									ipsum assumenda aliquam, corporis accusamus iste neque eaque
-									ea!</span
-								>
-							</div>
-						</li>
-						<li class="item">
-							<button type="button" class="edit" aria-label="Edit expense">✒️</button>
-							<div class="id">01</div>
-							<div class="expense">1000.00</div>
-							<div class="category">Food</div>
-							<div class="description truncate">
-								Spent by eating outside foods. Lorem ipsum dolor sit amet
-								consectetur, adipisicing elit. Repudiandae tenetur reprehenderit
-								ipsum assumenda aliquam, corporis accusamus iste neque eaque ea!
-								<span class="tooltip-text"
-									>Spent by eating outside foods. Lorem ipsum dolor sit amet
-									consectetur, adipisicing elit. Repudiandae tenetur reprehenderit
-									ipsum assumenda aliquam, corporis accusamus iste neque eaque
-									ea!</span
-								>
-							</div>
-						</li>
-						<li class="item">
-							<button type="button" class="edit" aria-label="Edit expense">✒️</button>
-							<div class="id">01</div>
-							<div class="expense">1000.00</div>
-							<div class="category">Food</div>
-							<div class="description truncate">
-								Spent by eating outside foods. Lorem ipsum dolor sit amet
-								consectetur, adipisicing elit. Repudiandae tenetur reprehenderit
-								ipsum assumenda aliquam, corporis accusamus iste neque eaque ea!
-								<span class="tooltip-text"
-									>Spent by eating outside foods. Lorem ipsum dolor sit amet
-									consectetur, adipisicing elit. Repudiandae tenetur reprehenderit
-									ipsum assumenda aliquam, corporis accusamus iste neque eaque
-									ea!</span
-								>
-							</div>
 						</li>
 					</ul>
 				</div>
@@ -162,7 +43,7 @@
 						<h3>Add New Expense</h3>
 						<label for="amount">
 							<span>Amount</span>
-							<input id="amount" type="number" />
+							<input id="amount" type="number" name="amount" />
 						</label>
 
 						<label for="category">
@@ -178,10 +59,10 @@
 
 						<label for="description">
 							<span>Description</span>
-							<input id="description" type="text" />
+							<input id="description" type="text" name="description" />
 						</label>
 
-						<button type="submit" class="button">Add</button>
+						<button type="submit" class="button" id="add">Add</button>
 					</form>
 					<button type="button" class="close" id="close">X</button>
 				</div>
