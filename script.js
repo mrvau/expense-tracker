@@ -17,7 +17,15 @@ const main = () => {
 		localStorage.setItem("expense", JSON.stringify(initialData));
 		loadToFrontend(initialData);
 	} else {
-		loadToFrontend(JSON.parse(data));
+		let parsed;
+		try {
+			parsed = JSON.parse(data);
+		} catch {
+			const initialData = { totalAmount: 0, expenses: [] };
+			localStorage.setItem("expense", JSON.stringify(initialData));
+			parsed = initialData;
+		}
+		loadToFrontend(parsed);
 	}
 };
 
@@ -69,19 +77,22 @@ const loadToFrontend = (data) => {
 
 const saveData = ({ amount, category, description }) => {
 	const raw = localStorage.getItem("expense");
-	if (!raw) return;
+	if (!raw) return false;
 
 	let data;
 	try {
 		data = JSON.parse(raw);
 	} catch {
-		return;
+		return false;
 	}
 
 	const parsedAmount = Number.parseFloat(amount);
 	if (!Number.isFinite(parsedAmount) || parsedAmount <= 0) return;
 
-	const newTotalExpense = Number.parseFloat(data.totalAmount) + parsedAmount;
+	const currentTotal = Number.parseFloat(data.totalAmount);
+	if (!Number.isFinite(currentTotal)) return false;
+
+	const newTotalExpense = currentTotal + parsedAmount;
 
 	const newExpense = {
 		id: data.expenses.length + 1,
@@ -101,6 +112,8 @@ const saveData = ({ amount, category, description }) => {
 	totalAmountEl.textContent = newTotalExpense;
 	const li = createList(newExpense);
 	ul.appendChild(li);
+
+	return true;
 };
 
 open.addEventListener("click", () => {
@@ -124,11 +137,14 @@ form.addEventListener("submit", (e) => {
 		description: description.value,
 	};
 
-	amount.value = "";
-	description.value = "";
-	select.value = "";
-
-	saveData(data);
+	const saved = saveData(data);
+	if (saved) {
+		amount.value = "";
+		description.value = "";
+		select.value = "";
+	} else {
+		alert("Failed to save data. Please try again.");
+	}
 });
 
 main();
