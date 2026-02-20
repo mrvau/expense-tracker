@@ -37,34 +37,24 @@ const main = () => {
 };
 
 // Function to create an edit button for each expense item
+let editingExpense = null;
 
-const createEditButton = (realData) => {
+const createEditButton = (data) => {
 	const btn = document.createElement("button");
 	btn.type = "button";
 	btn.className = "edit";
 	btn.setAttribute("aria-label", "Edit expense");
 	btn.textContent = "✒️";
 
-  let data;
-
 	btn.addEventListener("click", () => {
 		formModal.style.display = "block";
-		form.elements.namedItem("amount").value = realData.amount;
-		form.elements.namedItem("description").value = realData.description;
-		form.elements.namedItem("category").value = realData.category;
-    updateButton.style.display = "block";
-    addButton.style.display = "none";
+		form.elements.namedItem("amount").value = data.amount;
+		form.elements.namedItem("description").value = data.description;
+		form.elements.namedItem("category").value = data.category;
+		updateButton.style.display = "block";
+		addButton.style.display = "none";
+		editingExpense = data;
 	});
-
-  updateButton.addEventListener("click", () => {
-    data = {
-      amount: form.elements.namedItem("amount").value,
-      category: form.elements.namedItem("category").value,
-      description: form.elements.namedItem("description").value,
-      id: realData.id
-    };
-    saveData(data, data.id);
-  })
 	return btn;
 };
 
@@ -110,7 +100,7 @@ const loadToFrontend = (data) => {
 	const { totalAmount, expenses } = data;
 	totalAmountEl.textContent = totalAmount;
 
-	ul.innerHTML = "";
+	ul.querySelectorAll("li.item").forEach((li) => li.remove());
 
 	expenses.forEach((expense) => {
 		const li = createList(expense);
@@ -121,7 +111,7 @@ const loadToFrontend = (data) => {
 // Function to save data to localStorage
 
 const saveData = (realData, id = null) => {
-  const { amount, category, description } = realData;
+	const { amount, category, description } = realData;
 	const raw = localStorage.getItem("expense");
 	console.log(raw);
 	if (!raw) return false;
@@ -139,47 +129,44 @@ const saveData = (realData, id = null) => {
 	const currentTotal = Number.parseFloat(data.totalAmount);
 	if (!Number.isFinite(currentTotal)) return false;
 
-  let newTotalExpense;
+	const oldExpense = data.expenses.find((expense) => expense.id === id);
+	if (!oldExpense) return false;
 
-  let newData;
+	newTotalExpense = currentTotal - oldExpense.amount + parsedAmount;
 
-  if(id) {
-    const oldExpense = data.expenses.find((expense) => expense.id === id);
-    
-    newTotalExpense = oldExpense > parsedAmount ? currentTotal - (oldExpense.amount - parsedAmount) : currentTotal + (parsedAmount - oldExpense.amount);
+	let newData;
 
-    const updatedExpense = data.expenses.map((expense) => {
-      if(expense.id === id) {
-        expense.amount = parsedAmount;
-        expense.category = category;
-        expense.description = description;
-      }
-      return expense;
-    })
+	if (id) {
+		const updatedExpense = data.expenses.map((expense) => {
+			if (expense.id === id) {
+				expense.amount = parsedAmount;
+				expense.category = category;
+				expense.description = description;
+			}
+			return expense;
+		});
 
-    newData = {
-      totalAmount: newTotalExpense,
-      expenses: updatedExpense,
-	  };
-  } else {
-    newTotalExpense = currentTotal + parsedAmount;
-    
-    const newExpense = {
-      id: data.expenses.length + 1,
-      amount: parsedAmount,
-      category,
-      description,
-    };
+		newData = {
+			totalAmount: newTotalExpense,
+			expenses: updatedExpense,
+		};
+	} else {
+		const newExpense = {
+			id: data.expenses.length + 1,
+			amount: parsedAmount,
+			category,
+			description,
+		};
 
-    newData = {
-      totalAmount: newTotalExpense,
-      expenses: [...data.expenses, newExpense],
-    };
-  }
+		newData = {
+			totalAmount: newTotalExpense,
+			expenses: [...data.expenses, newExpense],
+		};
+	}
 
 	localStorage.setItem("expense", JSON.stringify(newData));
 	formModal.style.display = "none";
-  form.reset();
+	form.reset();
 
 	loadToFrontend(newData);
 
@@ -197,6 +184,16 @@ open.addEventListener("click", () => {
 
 close.addEventListener("click", () => {
 	formModal.style.display = "none";
+});
+
+updateButton.addEventListener("click", () => {
+	data = {
+		amount: form.elements.namedItem("amount").value,
+		category: form.elements.namedItem("category").value,
+		description: form.elements.namedItem("description").value,
+		id: editingExpense.id,
+	};
+	saveData(data, data.id);
 });
 
 form.addEventListener("submit", (e) => {
