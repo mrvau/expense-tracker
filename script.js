@@ -113,7 +113,6 @@ const loadToFrontend = (data) => {
 const saveData = (realData, id = null) => {
 	const { amount, category, description } = realData;
 	const raw = localStorage.getItem("expense");
-	console.log(raw);
 	if (!raw) return false;
 
 	let data;
@@ -129,14 +128,16 @@ const saveData = (realData, id = null) => {
 	const currentTotal = Number.parseFloat(data.totalAmount);
 	if (!Number.isFinite(currentTotal)) return false;
 
-	const oldExpense = data.expenses.find((expense) => expense.id === id);
-	if (!oldExpense) return false;
-
-	newTotalExpense = currentTotal - oldExpense.amount + parsedAmount;
+	let newTotalExpense;
 
 	let newData;
 
 	if (id) {
+		const oldExpense = data.expenses.find((expense) => expense.id === id);
+		if (!oldExpense) return false;
+
+		newTotalExpense = currentTotal - oldExpense.amount + parsedAmount;
+
 		const updatedExpense = data.expenses.map((expense) => {
 			if (expense.id === id) {
 				expense.amount = parsedAmount;
@@ -151,8 +152,9 @@ const saveData = (realData, id = null) => {
 			expenses: updatedExpense,
 		};
 	} else {
+		newTotalExpense = currentTotal + parsedAmount;
 		const newExpense = {
-			id: data.expenses.length + 1,
+			id: data.expenses.length > 0 ? Math.max(...data.expenses.map((e) => e.id)) + 1 : 1,
 			amount: parsedAmount,
 			category,
 			description,
