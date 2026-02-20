@@ -251,6 +251,10 @@ select {
 	border-radius: 6px;
 }
 
+#add, #update {
+	display: none;
+}
+
 .close {
 	position: absolute;
 	top: 10px;
