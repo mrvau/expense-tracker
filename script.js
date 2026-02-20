@@ -1,3 +1,5 @@
+// Constant declarations for DOM elements
+
 const totalAmountEl = document.getElementById("total-amount");
 const ul = document.getElementById("expense-list");
 
@@ -8,161 +10,216 @@ const formModal = document.getElementById("form-modal");
 
 const [form] = document.getElementsByTagName("form");
 
+const addButton = form.querySelector("#add");
+const updateButton = form.querySelector("#update");
+
 const formContainer = document.querySelector(".form-container");
 
+// Main function to initialize the application
+
 const main = () => {
-  const data = localStorage.getItem("expense");
-  if (!data) {
-    const initialData = { totalAmount: 0, expenses: [] };
-    localStorage.setItem("expense", JSON.stringify(initialData));
-    loadToFrontend(initialData);
-  } else {
-    let parsed;
-    try {
-      parsed = JSON.parse(data);
-    } catch {
-      const initialData = { totalAmount: 0, expenses: [] };
-      localStorage.setItem("expense", JSON.stringify(initialData));
-      parsed = initialData;
-    }
-    loadToFrontend(parsed);
-  }
+	const data = localStorage.getItem("expense");
+	if (!data) {
+		const initialData = { totalAmount: 0, expenses: [] };
+		localStorage.setItem("expense", JSON.stringify(initialData));
+		loadToFrontend(initialData);
+	} else {
+		let parsed;
+		try {
+			parsed = JSON.parse(data);
+		} catch {
+			const initialData = { totalAmount: 0, expenses: [] };
+			localStorage.setItem("expense", JSON.stringify(initialData));
+			parsed = initialData;
+		}
+		loadToFrontend(parsed);
+	}
 };
 
-const updateExpense = ({id, amount, category, description}) => {
-  const data = localStorage.getItem("expense");
-  if (!data) return;
+// Function to create an edit button for each expense item
 
-  try {}
-};
-
-const createEditButton = (data) => {
-  const btn = document.createElement("button");
-  btn.type = "button";
-  btn.className = "edit";
-  btn.setAttribute("aria-label", "Edit expense");
-  btn.textContent = "✒️";
-
-  btn.addEventListener("click", () => updateExpense(data));
-
-  return btn;
-};
-
-const createList = (data) => {
-  const { id, amount, category, description } = data;
-
-  const li = document.createElement("li");
-  li.classList.add("item");
-
-  const btn = createEditButton(data);
-
-  const idDiv = document.createElement("div");
-  idDiv.className = "id";
-  idDiv.textContent = String(id);
-
-  const amountDiv = document.createElement("div");
-  amountDiv.className = "expense";
-  amountDiv.textContent = String(amount);
-
-  const categoryDiv = document.createElement("div");
-  categoryDiv.className = "category";
-  categoryDiv.textContent = String(category);
-
-  const descDiv = document.createElement("div");
-  descDiv.className = "description truncate";
-  descDiv.textContent = String(description);
-
-  const tip = document.createElement("span");
-  tip.className = "tooltip-text";
-  tip.textContent = String(description);
-  descDiv.appendChild(tip);
-
-  li.append(btn, idDiv, amountDiv, categoryDiv, descDiv);
-
-  return li;
-};
-
-const loadToFrontend = (data) => {
-  const { totalAmount, expenses } = data;
-  totalAmountEl.textContent = totalAmount;
-
-  expenses.forEach((expense) => {
-    const li = createList(expense);
-    ul.appendChild(li);
-  });
-};
-
-const saveData = ({ amount, category, description }) => {
-  const raw = localStorage.getItem("expense");
-  console.log(raw);
-  if (!raw) return false;
+const createEditButton = (realData) => {
+	const btn = document.createElement("button");
+	btn.type = "button";
+	btn.className = "edit";
+	btn.setAttribute("aria-label", "Edit expense");
+	btn.textContent = "✒️";
 
   let data;
-  try {
-    data = JSON.parse(raw);
-  } catch {
-    return false;
-  }
 
-  const parsedAmount = Number.parseFloat(amount);
-  if (!Number.isFinite(parsedAmount) || parsedAmount <= 0) return;
+	btn.addEventListener("click", () => {
+		formModal.style.display = "block";
+		form.elements.namedItem("amount").value = realData.amount;
+		form.elements.namedItem("description").value = realData.description;
+		form.elements.namedItem("category").value = realData.category;
+    updateButton.style.display = "block";
+    addButton.style.display = "none";
+	});
 
-  const currentTotal = Number.parseFloat(data.totalAmount);
-  if (!Number.isFinite(currentTotal)) return false;
-
-  const newTotalExpense = currentTotal + parsedAmount;
-
-  const newExpense = {
-    id: data.expenses.length + 1,
-    amount,
-    category,
-    description,
-  };
-
-  const newData = {
-    totalAmount: newTotalExpense,
-    expenses: [...data.expenses, newExpense],
-  };
-
-  localStorage.setItem("expense", JSON.stringify(newData));
-  formModal.style.display = "none";
-
-  totalAmountEl.textContent = newTotalExpense;
-  const li = createList(newExpense);
-  ul.appendChild(li);
-
-  return true;
+  updateButton.addEventListener("click", () => {
+    data = {
+      amount: form.elements.namedItem("amount").value,
+      category: form.elements.namedItem("category").value,
+      description: form.elements.namedItem("description").value,
+      id: realData.id
+    };
+    saveData(data, data.id);
+  })
+	return btn;
 };
 
+// Function to create a list item for each expense
+
+const createList = (data) => {
+	const { id, amount, category, description } = data;
+
+	const li = document.createElement("li");
+	li.classList.add("item");
+
+	const btn = createEditButton(data);
+
+	const idDiv = document.createElement("div");
+	idDiv.className = "id";
+	idDiv.textContent = String(id);
+
+	const amountDiv = document.createElement("div");
+	amountDiv.className = "expense";
+	amountDiv.textContent = String(amount);
+
+	const categoryDiv = document.createElement("div");
+	categoryDiv.className = "category";
+	categoryDiv.textContent = String(category);
+
+	const descDiv = document.createElement("div");
+	descDiv.className = "description truncate";
+	descDiv.textContent = String(description);
+
+	const tip = document.createElement("span");
+	tip.className = "tooltip-text";
+	tip.textContent = String(description);
+	descDiv.appendChild(tip);
+
+	li.append(btn, idDiv, amountDiv, categoryDiv, descDiv);
+
+	return li;
+};
+
+// Function to load data to the frontend
+
+const loadToFrontend = (data) => {
+	const { totalAmount, expenses } = data;
+	totalAmountEl.textContent = totalAmount;
+
+	ul.innerHTML = "";
+
+	expenses.forEach((expense) => {
+		const li = createList(expense);
+		ul.appendChild(li);
+	});
+};
+
+// Function to save data to localStorage
+
+const saveData = (realData, id = null) => {
+  const { amount, category, description } = realData;
+	const raw = localStorage.getItem("expense");
+	console.log(raw);
+	if (!raw) return false;
+
+	let data;
+	try {
+		data = JSON.parse(raw);
+	} catch {
+		return false;
+	}
+
+	const parsedAmount = Number.parseFloat(amount);
+	if (!Number.isFinite(parsedAmount) || parsedAmount <= 0) return false;
+
+	const currentTotal = Number.parseFloat(data.totalAmount);
+	if (!Number.isFinite(currentTotal)) return false;
+
+  let newTotalExpense;
+
+  let newData;
+
+  if(id) {
+    const oldExpense = data.expenses.find((expense) => expense.id === id);
+    
+    newTotalExpense = oldExpense > parsedAmount ? currentTotal - (oldExpense.amount - parsedAmount) : currentTotal + (parsedAmount - oldExpense.amount);
+
+    const updatedExpense = data.expenses.map((expense) => {
+      if(expense.id === id) {
+        expense.amount = parsedAmount;
+        expense.category = category;
+        expense.description = description;
+      }
+      return expense;
+    })
+
+    newData = {
+      totalAmount: newTotalExpense,
+      expenses: updatedExpense,
+	  };
+  } else {
+    newTotalExpense = currentTotal + parsedAmount;
+    
+    const newExpense = {
+      id: data.expenses.length + 1,
+      amount: parsedAmount,
+      category,
+      description,
+    };
+
+    newData = {
+      totalAmount: newTotalExpense,
+      expenses: [...data.expenses, newExpense],
+    };
+  }
+
+	localStorage.setItem("expense", JSON.stringify(newData));
+	formModal.style.display = "none";
+  form.reset();
+
+	loadToFrontend(newData);
+
+	return true;
+};
+
+// Event listeners for opening and closing the form modal, and handling form submission
+
 open.addEventListener("click", () => {
-  formModal.style.display = "block";
+	formModal.style.display = "block";
+
+	updateButton.style.display = "none";
+	addButton.style.display = "block";
 });
 
 close.addEventListener("click", () => {
-  formModal.style.display = "none";
+	formModal.style.display = "none";
 });
 
 form.addEventListener("submit", (e) => {
-  e.preventDefault();
+	e.preventDefault();
 
-  const amount = form.elements.namedItem("amount");
-  const description = form.elements.namedItem("description");
-  const select = form.elements.namedItem("category");
+	const amount = form.elements.namedItem("amount");
+	const description = form.elements.namedItem("description");
+	const select = form.elements.namedItem("category");
 
-  const data = {
-    amount: amount.value,
-    category: select.value,
-    description: description.value,
-  };
+	const data = {
+		amount: amount.value,
+		category: select.value,
+		description: description.value,
+	};
 
-  const saved = saveData(data);
-  if (saved) {
-    amount.value = "";
-    description.value = "";
-    select.value = "";
-  } else {
-    alert("Failed to save data. Please try again.");
-  }
+	const saved = saveData(data);
+	if (saved) {
+		amount.value = "";
+		description.value = "";
+		select.value = "";
+	} else {
+		alert("Failed to save data. Please try again.");
+	}
 });
 
 main();
