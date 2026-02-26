@@ -25,6 +25,19 @@
 					<h1>Track Your Regular Expenses.</h1>
 					<p>Don't waste your wealth on unnecessary things!</p>
 				</div>
+				
+				<!-- Filter Section -->
+				<div class="filter-section">
+					<label for="filter">Filter by category:</label>
+					<select id="filter" class="filter-select">
+						<option value="all">All Categories</option>
+						<option value="food">Food</option>
+						<option value="transport">Transport</option>
+						<option value="entertainment">Entertainment</option>
+						<option value="etc">Etc.</option>
+					</select>
+				</div>
+				
 				<div class="expense-list">
 					<ul id="expense-list">
 						<li class="head">
@@ -32,6 +45,7 @@
 							<div>Amount</div>
 							<div>Category</div>
 							<div>Description</div>
+							<div>Actions</div>
 						</li>
 					</ul>
 				</div>
@@ -43,12 +57,12 @@
 						<h3>Add New Expense</h3>
 						<label for="amount">
 							<span>Amount</span>
-							<input id="amount" type="number" name="amount" />
+							<input id="amount" type="number" name="amount" min="0.01" step="0.01" required />
 						</label>
 
 						<label for="category">
 							<span>Category</span>
-							<select name="category" id="category">
+							<select name="category" id="category" required>
 								<option value="">Select One</option>
 								<option value="food">Food</option>
 								<option value="transport">Transport</option>
@@ -59,7 +73,7 @@
 
 						<label for="description">
 							<span>Description</span>
-							<input id="description" type="text" name="description" />
+							<input id="description" type="text" name="description" required />
 						</label>
 
 						<button type="submit" class="button" id="add">Add Expense</button>
