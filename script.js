@@ -21,6 +21,19 @@ let currentFilter = "all";
 // ==================== Utility Functions ====================
 
 /**
+ * Normalize and validate parsed localStorage data
+ * @param {*} data - Parsed data from localStorage
+ * @returns {Object} Normalized data with guaranteed shape
+ */
+const normalizeExpenseData = (input) => {
+	const total = Number.parseFloat(input?.totalAmount);
+	return {
+		totalAmount: Number.isFinite(total) ? total : 0,
+		expenses: Array.isArray(input?.expenses) ? input.expenses : [],
+	};
+};
+
+/**
  * Format number as currency
  * @param {number} amount - The amount to format
  * @returns {string} Formatted currency string
@@ -35,7 +48,8 @@ const formatCurrency = (amount) => {
  * @returns {string} Capitalized text
  */
 const capitalize = (text) => {
-	return text[0].toUpperCase() + text.slice(1);
+	const value = String(text ?? "");
+	return value ? value[0].toUpperCase() + value.slice(1) : "";
 };
 
 /**
@@ -204,7 +218,7 @@ const saveData = (realData, id = null) => {
 
 	let data;
 	try {
-		data = JSON.parse(raw);
+		data = normalizeExpenseData(JSON.parse(raw));
 	} catch {
 		return false;
 	}
@@ -290,7 +304,7 @@ const deleteExpense = (id) => {
 
 	let data;
 	try {
-		data = JSON.parse(raw);
+		data = normalizeExpenseData(JSON.parse(raw));
 	} catch {
 		return;
 	}
@@ -318,7 +332,7 @@ const handleEdit = (id) => {
 
 	let data;
 	try {
-		data = JSON.parse(raw);
+		data = normalizeExpenseData(JSON.parse(raw));
 	} catch {
 		return;
 	}
@@ -347,7 +361,7 @@ const filterExpenses = (category) => {
 
 	let data;
 	try {
-		data = JSON.parse(raw);
+		data = normalizeExpenseData(JSON.parse(raw));
 	} catch {
 		return;
 	}
@@ -369,7 +383,7 @@ const main = () => {
 	} else {
 		let parsed;
 		try {
-			parsed = JSON.parse(data);
+			parsed = normalizeExpenseData(JSON.parse(data));
 		} catch {
 			const initialData = { totalAmount: 0, expenses: [] };
 			localStorage.setItem("expense", JSON.stringify(initialData));
